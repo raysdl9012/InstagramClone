@@ -1,0 +1,23 @@
+//
+//  {{FILENAME}}
+//  
+//
+//  Created by {{AUTHOR}} on {{DATE}}.
+//
+
+import XCTest
+@testable import {{PROJECT_NAME}}
+
+final class {{FILENAME}}: XCTestCase {
+    override func setUp() {
+        super.setUp()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    func testExample() {
+        XCTAssertTrue(true)
+    }
+}

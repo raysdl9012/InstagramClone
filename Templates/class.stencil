@@ -1,0 +1,12 @@
+//
+//  {{FILENAME}}
+//  
+//
+//  Created by {{AUTHOR}} on {{DATE}}.
+//
+
+import Foundation
+
+class {{FILENAME}} {
+    // TODO: Implement this class
+}

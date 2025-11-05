@@ -1,0 +1,110 @@
+name: "Project"
+author: "Reinner Steven Daza Leiva"
+description: "This is a skeleton app"
+build:
+  Tests:
+    Example:
+      file: "ExampleTest.swift"
+      type: "test"
+  Sources:
+    
+    file: "ProjectApp.swift"
+    type: "main"
+
+    Application:
+      Core:
+        Networking:
+          NetworkManager:
+            file: "NetworkManager.swift"
+            type: "class"
+          APIEndpoint:
+            file: "APIEndpoint.swift"
+            type: "class"
+          HTTPMethod:
+            file: "HTTPMethod.swift"
+            type: "class"
+        Storage:
+          UserDefaultsManager:
+            file: "UserDefaultsManager.swift"
+            type: "class"
+          KeychainManager:
+            file: "KeychainManager.swift"
+            type: "class"
+          CoreData:
+            file: "CoreData.swift"
+            type: "class"
+        Extensions:
+          Views:
+            file: "ViewExtension.swift"
+            type: "class"
+        Utilities:
+          Constants:
+            file: "Logger.swift"
+            type: "class"
+      Models:
+        UserEntity:
+          file: "UserEntity.swift"
+          type: "model"
+      Features:
+        Splash:
+          Views:
+            SplashView:
+              file: "SplashView.swift"
+              type: "view"
+          ViewMode:
+            SplashViewModel:
+              file: "SplashViewModel.swift"
+              type: "class"
+        Authentication:
+          Views:
+            Login:
+              file: "LoginView.swift"
+              type: "view"
+            Registre:
+              file: "RegisterView.swift"
+              type: "view"
+
+          ViewMode:
+            LoginViewModel:
+              file: "LoginViewModel.swift"
+              type: "class"
+            RegisterViewModel:
+              file: "RegisterViewModel.swift"
+              type: "class"
+      Services:
+        AuthenticationService:
+          file: "AuthenticationService.swift"
+          type: "class"
+        AnyService:
+          file: "AnyService.swift"
+          type: "class"
+        UserService:
+          file: "UserService.swift"
+          type: "class"
+      Shared:
+        Components:
+          Button:
+            file: "CustomButton.swift"
+            type: "class"
+          TextField:
+            file: "CustomTextField.swift"
+            type: "class"
+        Modifiers:
+          Card:
+            file: "CardModifier.swift"
+            type: "class"
+
+  Resources:
+    Assets.xcassets:
+      file: "Contents.json"
+      type: "Assets_xcassets"
+      AccentColor.colorset:
+        file: "Contents.json"
+        type: "AccentColor_colorset"
+      AppIcon.appiconset:
+        file: "Contents.json"
+        type: "AppIcon_appiconset"
+    Preview Content:
+      Preview Assets.xcassets:
+        file: "Contents.json"
+        type: "Preview_Assets_xcassets"

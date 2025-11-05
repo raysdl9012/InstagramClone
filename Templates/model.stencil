@@ -1,0 +1,13 @@
+//
+//  {{FILENAME}}
+//  
+//
+//  Created by {{AUTHOR}} on {{DATE}}.
+//
+
+import Foundation
+
+struct {{FILENAME}}: Codable, Identifiable {
+    let id: UUID
+    // TODO: Add model properties
+}
