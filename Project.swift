@@ -3,7 +3,7 @@ import ProjectDescription
 
 // MARK: - Base Settings
 
-private let name = "Project"
+private let name = "InstagaramClone"
 private let bundleIdentifier = "com.rsdl.project"
 private let organization = "rsdl"
 

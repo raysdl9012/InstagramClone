@@ -26,7 +26,7 @@ NC='\033[0m' # No Color
 # 1. Check if the script is being run by Bash
 if [ -z "$BASH_VERSION" ]; then
     echo -e "${COLOR_RED}Error: Este script debe ser ejecutado con Bash, no con 'sh'.${NC}" >&2
-    echo -e "${COLOR_YELLOW}Por favor, ejecútalo así: ./generate_project.sh${NC}" >&2
+    echo -e "${COLOR_YELLOW}Por favor, ejecútalo así: ./build.sh${NC}" >&2
     exit 1
 fi
 
