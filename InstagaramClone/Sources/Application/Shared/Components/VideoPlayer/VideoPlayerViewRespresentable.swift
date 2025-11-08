@@ -15,7 +15,7 @@ import AVFoundation
 
 struct AVPlayerRepresentable: UIViewRepresentable {
     
-    @Binding var player: AVPlayer
+    var player: AVPlayer
     @Binding var isPlaying: Bool
 
 

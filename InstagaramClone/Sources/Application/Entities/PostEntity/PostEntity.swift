@@ -23,7 +23,7 @@ struct MultimediaEntity: Identifiable {
     var id: UUID
     var url: String
     var type: MultimediaType
-    
+    var manager: VideoPlayerManager?
     public func getVideoURL() -> URL? {
         guard let url = URL(string: url) else {
             return nil
@@ -53,7 +53,7 @@ extension PostEntity {
               userName: "Mauricio",
               likes: 9,
               media: .init(id: UUID(),
-                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/feb759a2-c018-443e-afff-9c2aba5e2fe3.MP4?alt=media&token=805f8ffc-ecfa-4964-ab33-1c8a109292d7",
+                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/videoplayback.mp4?alt=media&token=8adcd820-cb8b-415a-8048-5a0b659f6193",
                            type: .video)),
         .init(id: UUID(),
               userId: "",
@@ -67,7 +67,28 @@ extension PostEntity {
               userName: "Andrea",
               likes: 13,
               media: .init(id: UUID(),
-                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/feb759a2-c018-443e-afff-9c2aba5e2fe3.MP4?alt=media&token=805f8ffc-ecfa-4964-ab33-1c8a109292d7",
+                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/Download.mp4?alt=media&token=4714c48e-861b-4ce8-ab4d-f69e539ddc50",
+                           type: .video)),
+        .init(id: UUID(),
+              userId: "",
+              userName: "Marco",
+              likes: 13,
+              media: .init(id: UUID(),
+                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/videoplayback.mp4?alt=media&token=bc88fbc1-c217-4126-96e4-9a686d2ffb21",
+                           type: .video)),
+        .init(id: UUID(),
+              userId: "",
+              userName: "Marvel",
+              likes: 13,
+              media: .init(id: UUID(),
+                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/videoplayback%20(2).mp4?alt=media&token=d838859d-475d-49a5-8432-9462988fbee9",
+                           type: .video)),
+        .init(id: UUID(),
+              userId: "",
+              userName: "El tiempho",
+              likes: 13,
+              media: .init(id: UUID(),
+                           url: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/videoplayback%20(1).mp4?alt=media&token=9f0f9f12-ecdd-45d5-8385-654033081d33",
                            type: .video)),
     ]
 }

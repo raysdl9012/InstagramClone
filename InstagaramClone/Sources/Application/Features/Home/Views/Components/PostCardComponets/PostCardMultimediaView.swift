@@ -11,11 +11,11 @@ import AVKit // Necesario para AVPlayer
 import AVFoundation // Necesario para AVPlayerLayer
 
 struct PostCardMultimediaView: View {
+    @EnvironmentObject var videoPostViewModel: VideoControlViewModel
     var media: MultimediaEntity
     var body: some View {
         VStack {
             switch media.type {
-                
             case .image:
                 Image(media.url)
                     .resizable()
@@ -23,8 +23,12 @@ struct PostCardMultimediaView: View {
                     .frame(maxWidth: .infinity)
                 
             case .video:
-                if let url = media.getVideoURL()  {
-                    CustomVideoPlayer(videoURL: url)
+                if let url = media.getVideoURL(), let manager = media.manager  {
+                    CustomVideoPlayer(manager: manager,
+                                      videoURL: url,
+                                      isFocused: .constant(videoPostViewModel.videoPlayer == media.id)) {
+                        videoPostViewModel.videoPlayer = media.id
+                    }
                 }else {
                     EmptyView()
                         .background(.black)
@@ -37,6 +41,7 @@ struct PostCardMultimediaView: View {
 
 #Preview {
     PostCardMultimediaView(media: PostEntity.mock.first!.media)
+        .environmentObject(VideoControlViewModel())
 }
 
 

@@ -10,45 +10,59 @@ import AVKit
 import AVFoundation
 
 struct CustomVideoPlayer: View {
+    
     let videoURL: URL
-    @State private var player: AVPlayer
+    
+    @Binding var isFocused: Bool
     @State private var isPlaying: Bool = false
+    @ObservedObject var manager: VideoPlayerManager
     
-    // Estados para la barra de progreso y arrastre
-    @State private var totalDuration: Double = 0
-    @State private var currentTime: Double = 0
-    @State private var isDragging: Bool = false
-    @State private var videoAspectRatio: CGFloat = 16.0 / 9.0
+    var onClick: () -> Void
     
-    // Inicializador seguro (sin cambios)
-    init(videoURL: URL) {
+    init(manager: VideoPlayerManager,
+         videoURL: URL,
+         isFocused: Binding<Bool>,
+         onClick: @escaping () -> Void) {
+        // Inicializar todas las propiedades de almacenamiento
+        self.manager = manager
         self.videoURL = videoURL
-        let initialPlayer = AVPlayer(url: videoURL)
-        _player = State(initialValue: initialPlayer)
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-            try AVAudioSession.sharedInstance().setActive(true)
-        }catch {
-            fatalError("Este es un error a controlar")
+        self.onClick = onClick
+        // Inicializar el Binding (proyección)
+        _isFocused = isFocused
+    }
+    
+    
+    private func getHeight(width: CGFloat) -> CGFloat {
+        if manager.videoAspectRatio < 1 {
+            return width * 0.9 / manager.videoAspectRatio
+        }else {
+            return width / manager.videoAspectRatio
         }
     }
     
-    private func controlPlayPause() {
-        if isPlaying {
-            player.pause()
+    private func getWidth(width: CGFloat) -> CGFloat {
+        if manager.videoAspectRatio < 1 {
+            return width * 0.9
         }else {
-            player.play()
+            return width
         }
     }
+    
     
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .center) {
-                AVPlayerRepresentable(player: $player, isPlaying: $isPlaying)
-                    .frame(height: geometry.size.width / videoAspectRatio)
+                AVPlayerRepresentable(player: manager.player, isPlaying: $isPlaying)
+                    .frame(height: getHeight(width: geometry.size.width))
+                    .frame(maxWidth: getWidth(width: geometry.size.width))
                     .onTapGesture {
                         isPlaying.toggle()
-                        controlPlayPause()
+                        if isPlaying {
+                            onClick()
+                            manager.pause()
+                        }else {
+                            manager.play()
+                        }
                     }
                 
                 if !isPlaying {
@@ -61,79 +75,50 @@ struct CustomVideoPlayer: View {
                 VStack(spacing: 0) {
                     Spacer()
                     VideoProgressBarView(
-                        isDragging: $isDragging,
-                        currentTime: $currentTime,
-                        player: player,
-                        totalDuration: totalDuration
+                        isDragging: $manager.isDragging,
+                        currentTime: $manager.currentTime,
+                        player: manager.player,
+                        totalDuration: manager.totalDuration
                     )
                     .frame(height: 3)
                 }
                 .padding(.bottom, 16)
             }
         }
+        .onChange(of: isFocused, perform: { newValue in
+            print("New focus value: \(newValue)")
+            
+            if !newValue {
+                isPlaying = false
+                manager.pause()
+            }
+            
+        })
         .background(.black)
-        .aspectRatio(videoAspectRatio, contentMode: .fit)
+        .clipped()
+        .aspectRatio(manager.videoAspectRatio, contentMode: .fit)
         .onAppear {
-            setupPlayerObservers(player: player)
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.playback,
+                                                                mode: .default,
+                                                                options: .mixWithOthers)
+                try AVAudioSession.sharedInstance().setActive(true)
+            } catch {
+                fatalError("Controlar el error de audio session")
+            }
         }
         .onDisappear {
-            player.pause()
-        }
-    }
-}
-
-extension CustomVideoPlayer {
-    // MARK: - Lógica de Observadores y Ratio
-    private func setupPlayerObservers(player: AVPlayer) {
-        // Observador de tiempo (actualiza la barra de progreso) - Sin cambios aquí
-        player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: .main) { time in
-            guard !isDragging else { return }
-            self.currentTime = CMTimeGetSeconds(time)
-        }
-        
-        // **NUEVA IMPLEMENTACIÓN:** Usando async/await y nuevas APIs
-        Task { // Iniciamos una tarea asíncrona
-            guard let currentItem = player.currentItem else { return }
-            let asset = currentItem.asset
-            
-            do {
-                // 1. Carga asíncrona de duración y tracks (más moderno que loadValuesAsynchronously)
-                // Ya no es necesario llamar explícitamente a loadValuesAsynchronously
-                // Puedes acceder a las propiedades directamente después de cargarlas.
-                
-                // 2. Obtener Duración (CORREGIDO: Usando .duration.seconds en lugar de CMTimeGetSeconds)
-                let duration = try await asset.load(.duration)
-                
-                // 3. Obtener Tracks (CORREGIDO: Usando el nuevo método de carga asíncrona)
-                let tracks = try await asset.load(.tracks)
-                
-                // Aseguramos la actualización en el hilo principal
-                await MainActor.run {
-                    self.totalDuration = duration.seconds
-                    
-                    // 4. Obtener Aspect Ratio (CORREGIDO: Obteniendo la información de la pista de video)
-                    if let videoTrack = tracks.first(where: { $0.mediaType == .video }) {
-                        
-                        // 5. Tamaño Natural (CORREGIDO: Usando el nuevo método load(.naturalSize))
-                        Task {
-                            let size = try await videoTrack.load(.naturalSize)
-                            await MainActor.run {
-                                self.videoAspectRatio = size.width / size.height
-                            }
-                        }
-                    }
-                }
-            } catch {
-                print("Error al cargar propiedades del asset: \(error)")
-            }
+            manager.pause()
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        
         let sampleURL = URL(string: "https://firebasestorage.googleapis.com/v0/b/instagramclone-2d24e.firebasestorage.app/o/feb759a2-c018-443e-afff-9c2aba5e2fe3.MP4?alt=media&token=805f8ffc-ecfa-4964-ab33-1c8a109292d7")!
-        CustomVideoPlayer(videoURL: sampleURL)
+        let manager = VideoPlayerManager(videoID: UUID(), videoURL: sampleURL)
+        CustomVideoPlayer(manager: manager, videoURL: sampleURL, isFocused: .constant(false)) {
+            
+        }
     }
 }

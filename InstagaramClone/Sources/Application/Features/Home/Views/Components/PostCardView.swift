@@ -11,18 +11,16 @@ import SwiftUI
 struct PostCardView: View {
     
     var post: PostEntity
-    @Binding var isFocused: UUID?
-    
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 3) {
             // MARK: - Encabezado del Post (Usuario y Opciones)
             PostCardHeaderView(username: post.userName)
             
             // MARK: - Imagen del Post
             PostCardMultimediaView(media: post.media)
             
-            // MARK: - Botones de Interacción (Like, Comentar, Compartir, Guardar)
+            // MARK: - Botones de Interacción
             PostCardInteractiveView()
             
             // MARK: - Likes y Descripción
@@ -33,6 +31,5 @@ struct PostCardView: View {
 }
 
 #Preview {
-    PostCardView(post: PostEntity.mock.first!,
-                 isFocused: .constant(UUID()))
+    PostCardView(post: PostEntity.mock.first!)
 }

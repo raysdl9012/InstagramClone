@@ -10,32 +10,10 @@ import SwiftUI
 
 struct HomeView: View {
     
-    let username = "@rsdl"
-    let likes = "10"
+    @StateObject var viewModel: HomeViewModel = HomeViewModel()
     
-    @State private var focusedVideoID: UUID?
-    
-    
-    // Función de Ayuda: Lógica para determinar el foco
-    func checkVideoFocus(postID: UUID, postFrame: CGRect, containerCenter: CGFloat) {
-        let centerDistance = abs(postFrame.midY - containerCenter)
-        let focusThreshold: CGFloat = 100
-        
-        if centerDistance < focusThreshold {
-            if focusedVideoID != postID {
-                focusedVideoID = postID
-            }
-        } else if focusedVideoID == postID && centerDistance > 150 {
-            // Desenfoque más agresivo si sale del área central
-            focusedVideoID = nil
-        }
-    }
-    
-    
-    @State private var selected = 0
     var body: some View {
         NavigationStack {
-         
             ScrollView {
                 VStack{
                     HStack {
@@ -99,19 +77,19 @@ struct HomeView: View {
                     .padding(.top, 10)
                 }
                 
-                ForEach(PostEntity.mock) { post in
-                    PostCardView(post: post, isFocused: $focusedVideoID)
+                if viewModel.posts.isEmpty {
+                    EmptyView()
+                }else {
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.posts) { post in
+                            PostCardView(post: post)
+                        }
+                    }
                 }
             }
-            Spacer()
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            leadingToolbarItem { }
-            principalToolbarItem(title: "Instagram")
-            trailingToolbarItem { }
         }
     }
+    
 }
 
 struct CircleBorderSegment: View {
@@ -127,29 +105,10 @@ struct CircleBorderSegment: View {
     }
 }
 
-struct ToolbarTabButton: View {
-    let title: String
-    let index: Int
-    @Binding var selected: Int
-    let color: Color
-    
-    var body: some View {
-        Button {
-            selected = index
-        } label: {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(selected == index ? color : .gray)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(selected == index ? color.opacity(0.15) : .clear)
-                .clipShape(Capsule())
-        }
-    }
-}
 
 #Preview {
     NavigationStack {
         HomeView()
+            .environmentObject(VideoControlViewModel())
     }
 }

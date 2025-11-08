@@ -16,7 +16,6 @@ struct VideoProgressBarView: View {
     let totalDuration: Double
     
     private func actionDragginMove(dragging: Bool) {
-        print("Video is dragging: \(dragging) ")
         isDragging = dragging
         if !dragging, let player = player {
             let newTime = CMTime(seconds: currentTime, preferredTimescale: 500)
