@@ -4,7 +4,7 @@ InstagramClone is a SwiftUI-based social media application inspired by Instagram
 
 ---
 
-[![Watch the video](https://img.youtube.com/vi/T-D1KVIuvjA/maxresdefault.jpg)](https://youtu.be/T-D1KVIuvjA)
+[![Demo del InstaClone - Click para ver](https://firebasestorage.googleapis.com/v0/b/ios-dev-337eb.firebasestorage.app/o/InstaClone%2Fappstore.png?alt=media&token=45f24d5e-b8f7-4815-b87d-4e5c12d35996)](https://firebasestorage.googleapis.com/v0/b/ios-dev-337eb.firebasestorage.app/o/InstaClone%2FInstaCloneDemo.mp4?alt=media&token=bf41f5ae-df2d-48b3-88df-5aa67fc0ac8c)
 
 ## 🚀 Features
 
