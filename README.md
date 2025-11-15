@@ -150,13 +150,23 @@ open InstagramClone.xcodeproj
 
 ---
 
-## 📄 License
-This project is for educational purposes only and is not intended for commercial use. Instagram™ is a trademark of Meta Platforms, Inc.
+## 🤝 Contributions
+
+This is a personal portfolio project. If you discover any issues or have suggestions, feel free to open an issue.
 
 ---
 
 ## 👨‍💻 Author
-Developed by Reinner Steven Daza Leiva.
 
-Feel free to contribute or create issues for improvements.
+**iOS Developer**
+GitHub: [@raysdl9012](https://github.com/raysdl9012)
 
+---
+
+## 📄 License
+
+This project is open-source under the MIT License. You are welcome to use it as a reference or inspiration for your own portfolio.
+
+---
+
+Developed with ❤️ to showcase iOS development services.
