@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
-
+import Firebase
 @main
 struct InstagaramCloneApp: App {
-    @StateObject private var session = SessionManager()
+    @StateObject private var sessionManager = SessionManager()
+    init(){
+        FirebaseApp.configure()
+    }
     var body: some Scene {
         WindowGroup {
             SplashView()
-                .environmentObject(session)
+                .environmentObject(sessionManager)
         }
     }
 }

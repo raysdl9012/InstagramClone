@@ -10,5 +10,6 @@ import Foundation
 internal import Combine
 
 class VideoControlViewModel: ObservableObject {
-    @Published var videoPlayer: UUID = UUID()
+    
+    @Published var currentVideoPlayer: URL?
 }

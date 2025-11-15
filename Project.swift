@@ -61,6 +61,7 @@ let project = Project(
     ],
     additionalFiles: [
         "README.md"
+        //"GoogleService-Info" 
     ]
 )
 

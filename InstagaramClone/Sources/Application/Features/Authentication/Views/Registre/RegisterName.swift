@@ -10,17 +10,17 @@ import SwiftUI
 
 struct RegisterName: View {
     @Environment(\.dismiss) var dismiss
-    @State var nameText: String = ""
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
         SkeletonRegister(title: "What's your name?",
                          description: "Add your name to your profile") {
             
             CustomTextFieldRegister(placeholder: "Enter your name",
-                                    text: $nameText)
+                                    text: $viewModel.name)
             
             NavigationButton(text: "Next",
-                             isDisable: nameText.count < 5) {
+                             isDisable: viewModel.name.count < 5) {
                 RegisterBirthDay()
                     .navigationBarBackButtonHidden(true)
             }
@@ -34,5 +34,6 @@ struct RegisterName: View {
 #Preview {
     NavigationStack{
         RegisterName()
+            .environmentObject(AuthenticationViewModel())
     }
 }

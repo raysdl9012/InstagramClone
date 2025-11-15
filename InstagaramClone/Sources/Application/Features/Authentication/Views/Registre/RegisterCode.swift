@@ -9,7 +9,9 @@
 import SwiftUI
 
 struct RegisterCode: View {
+    
     @Environment(\.dismiss) var dismiss
+    
     @State var code: [String] = Array(repeating: "", count: 5)
     @State var isCodeValidate: Bool = false
     
@@ -25,8 +27,7 @@ struct RegisterCode: View {
                     .foregroundStyle(.red)
             }
             
-            CustomButtonRegister(title: "Next",
-                                 isDisable: codeIsValid) {
+            CustomButtonRegister(title: "Next", isDisable: codeIsValid) {
                 isCodeValidate.toggle()
             }
         }
@@ -42,7 +43,8 @@ struct RegisterCode: View {
 
 extension RegisterCode {
     private var codeIsValid: Bool {
-        !(code.joined().count == 5)
+        let code = code.joined()
+        return !(code.count == 5) || code != "12345"
     }
 }
 

@@ -11,10 +11,11 @@ import SwiftUI
 struct PostCardInfoView: View {
     var post: PostEntity
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("\(post.likes) Me gusta")
+        HStack() {
+            Text("\(post.likes.count) Me gusta")
                 .font(.footnote)
                 .fontWeight(.semibold)
+            Spacer()
         }
         .padding(.horizontal, 8)
         .padding(.bottom, 8)

@@ -9,53 +9,58 @@
 import SwiftUI
 
 struct ReelsInteractiveView: View {
+    var reel: ReelEntity
+    let userLike: Bool
+    var reelComments: Int = 0
+    var onLike: () -> Void = { }
+    var onComment: () -> Void = { }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 25) {
             
             VStack(spacing: 8) {
                 Button(action: {
-                    
+                    onLike()
                 }) {
-                    Image(systemName: "heart")
-                        .font(Font.system(size: 30))
-                        .foregroundColor(.white)
+                    if userLike {
+                        Image(systemName: "heart.fill")
+                            .font(Font.system(size: 30))
+                            .foregroundColor(.red)
+                    }else {
+                        Image(systemName: "heart")
+                            .font(Font.system(size: 30))
+                            .foregroundColor(.white)
+                    }
                 }
                 
-                Text("123")
+                Text("\(reel.likes.count)")
                     .foregroundStyle(.white)
             }
+            .padding(.top, 20)
+            .padding(.horizontal, 5)
             
             VStack(spacing: 8) {
                 Button(action: {
-                    
+                    onComment()
                 }) {
                     Image(systemName: "message")
                         .font(Font.system(size: 30))
                         .foregroundColor(.white)
                 }
                 
-                Text("10")
+                Text("\(reelComments)")
                     .foregroundStyle(.white)
             }
-            
-            VStack(spacing: 8) {
-                Button(action: {
-                    
-                }) {
-                    Image(systemName: "paperplane")
-                        .font(Font.system(size: 30))
-                        .foregroundColor(.white)
-                }
-                
-                Text("63")
-                    .foregroundStyle(.white)
-            }
+            .padding(.bottom, 20)
+            .padding(.horizontal, 5)
         }
-
+        .background(.black.opacity(0.3))
+        .clipShape(Capsule())
+        
+        
     }
 }
 
 #Preview {
-    ReelsInteractiveView()
-        .background(.black)
+    ReelsInteractiveView(reel: ReelEntity.mock[0], userLike: true)
 }

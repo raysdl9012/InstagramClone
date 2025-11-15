@@ -10,84 +10,79 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject var sessionManager: SessionManager
+    
     @StateObject var viewModel: HomeViewModel = HomeViewModel()
+    
+    @State private var showNewPost = false
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack{
-                    HStack {
-                        VStack(alignment: .center, spacing: 8) {
-                            ZStack{
-                                Image("logo")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 20)
-                                
-                                CircleBorderSegment(start: 0.0, end: 0.15)   // primer punto
-                                CircleBorderSegment(start: 0.33, end: 0.48) // segundo punto
-                                CircleBorderSegment(start: 0.66, end: 0.82) // tercer punto
-                            }
-                            
-                            
-                            Text("@STEVEN_DZA")
-                                .font(.caption2)
-                        }
-                        
-                        VStack(alignment: .center, spacing: 8) {
-                            ZStack{
-                                Image("logo")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 20)
-                                
-                                CircleBorderSegment(start: 0.0, end: 0.15)   // primer punto
-                                CircleBorderSegment(start: 0.33, end: 0.48) // segundo punto
-                                CircleBorderSegment(start: 0.66, end: 0.82) // tercer punto
-                            }
-                            
-                            
-                            Text("@STEVEN_DZA")
-                                .font(.caption2)
-                        }
-                        
-                        VStack(alignment: .center, spacing: 8) {
-                            ZStack{
-                                Image("logo")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 20)
-                                
-                                CircleBorderSegment(start: 0.0, end: 0.15)   // primer punto
-                                CircleBorderSegment(start: 0.33, end: 0.48) // segundo punto
-                                CircleBorderSegment(start: 0.66, end: 0.82) // tercer punto
-                            }
-                            
-                            
-                            Text("@STEVEN_DZA")
-                                .font(.caption2)
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.top, 10)
-                }
-                
-                if viewModel.posts.isEmpty {
-                    EmptyView()
-                }else {
+            ZStack(alignment: .top) {
+                ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.posts) { post in
                             PostCardView(post: post)
+                                .id(post.id)
+                        }
+                        
+                        Color.clear
+                            .frame(height: 20)
+                            .onAppear {
+                                viewModel.loadMorePosts()
+                            }
+                        
+                        // Indicador de carga para la paginación
+                        if viewModel.isLoadingMore {
+                            HStack {
+                                ProgressView()
+                                    .padding()
+                                Text("loadin...")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
                         }
                     }
                 }
+                .refreshable {
+                    viewModel.fetchPosts()
+                }
+                .task {
+                    if viewModel.posts.isEmpty {
+                        viewModel.fetchPosts()
+                    }
+                }
+                .toolbar {
+                    leadingToolbarItem {
+                        showNewPost.toggle()
+                    }
+                    principalToolbarItem(title: "InstaClone")
+                }
+                .navigationDestination(isPresented: $showNewPost) {
+                    CreatePostView(sessionManager: sessionManager) {
+                        viewModel.fetchPosts()
+                    }
+                    .navigationBarBackButtonHidden()
+                }
+                
+                // SImpleLoading
+                if viewModel.isLoading && viewModel.posts.isEmpty {
+                    ProgressView("Loading posts...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color(UIColor.systemGroupedBackground))
+                }
+                
+                // ErrorView
+                if let errorMessage = viewModel.errorMessage, viewModel.posts.isEmpty {
+                    ErrorLoadPostView(message: errorMessage) {
+                        viewModel.fetchPosts()
+                    }
+                }
             }
+            .environmentObject(viewModel)
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
     
 }
@@ -105,10 +100,10 @@ struct CircleBorderSegment: View {
     }
 }
 
-
 #Preview {
     NavigationStack {
         HomeView()
             .environmentObject(VideoControlViewModel())
+            .environmentObject(SessionManager())
     }
 }

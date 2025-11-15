@@ -11,6 +11,7 @@ import SwiftUI
 struct RegisterConditions: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var session: SessionManager
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     var body: some View {
         VStack() {
             CustomBackButton() {
@@ -29,9 +30,6 @@ struct RegisterConditions: View {
                         RoundedRectangle(cornerRadius: 14)
                             .stroke(Color.gray.opacity(0.3),lineWidth: 1.5)
                     }
-                    
-                
-                
                 
                 VStack(alignment: .leading) {
                     Text("To sign up, you must agree to our Terms.")
@@ -41,14 +39,32 @@ struct RegisterConditions: View {
                     Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ulla ")
                 }
                 
+                Spacer(minLength: 80)
+                if viewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .purple))
+                        .scaleEffect(1.6)
+                        .padding(.top, 30)
+                } else {
+                    CustomButtonRegister(title: "I Agree",
+                                         isDisable: false) {
+                        viewModel.register()
+                    }.padding(.top, 30)
+                }
                 
-                CustomButtonRegister(title: "I Agree",
-                                     isDisable: false) {
-                    session.login()
-                    
-                }.padding(.top, 30)
-                
-                Spacer()
+            }
+            .alert("Error de Registro", isPresented: .constant(viewModel.errorMessage != nil), actions: {
+                Button("OK") {
+                    viewModel.errorMessage = nil
+                }
+            }, message: {
+                Text(viewModel.errorMessage ?? "Error desconocido")
+            })
+            // Navegar automáticamente si el registro es exitoso
+            .onChange(of: viewModel.registrationSuccess) { success in
+                if success {
+                    dismiss() // Cierra esta vista, el SessionManager ya actualizó la UI principal
+                }
             }
         }
         .padding(.horizontal, 15)
@@ -58,5 +74,6 @@ struct RegisterConditions: View {
 #Preview {
     NavigationStack{
         RegisterConditions()
+            .environmentObject(AuthenticationViewModel())
     }
 }

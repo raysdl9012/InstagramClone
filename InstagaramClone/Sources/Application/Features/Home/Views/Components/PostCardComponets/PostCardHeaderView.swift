@@ -9,15 +9,61 @@
 import SwiftUI
 
 struct PostCardHeaderView: View {
-    var username: String = "@rsdl"
+    @EnvironmentObject var sessionManager: SessionManager
+    @EnvironmentObject var viewModel: HomeViewModel
+    var post: PostEntity
+    private let gradientColors: [Color] = [.red, .purple, .orange]
+    
+    private var author: UserEntity? {
+        viewModel.authors[post.ownerId]
+    }
+    
+    
     var body: some View {
         HStack {
-            Image(systemName: "person.circle.fill") // Icono de perfil genérico
-                .resizable()
-                .frame(width: 30, height: 30)
-                .clipShape(Circle())
+            if let media = author?.profileImage {
+                
+                NavigationLink {
+                    
+                    if sessionManager.currentUser?.id == author?.id {
+                        ProfileView()
+                            .toolbar(.hidden, for: .tabBar)
+                    }else {
+                        ProfileView(publicUser: author)
+                            .toolbar(.hidden, for: .tabBar)
+                    }
+                    
+                } label: {
+                    RemoteImageView(media: media,
+                                    placeholderImage: Image(systemName: "person.circle.fill"))
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(
+                                LinearGradient(
+                                    gradient: Gradient(colors: gradientColors),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 2
+                            )
+                    )    .clipped()
+                }
+                
+            }else {
+                Image(systemName: "person.fill")
+                    .font(.system(size: 30))
+                    .foregroundColor(.indigo.opacity(0.5))
+                    .frame(width: 30, height: 30)
+                    .padding(10)
+                    .background(Color.gray.opacity(0.3))
+                    .clipShape(Circle())
+            }
             
-            Text(username)
+            
+            
+            Text(author?.getFullName() ?? "Unknown User")
                 .font(.subheadline)
                 .fontWeight(.semibold)
             
@@ -36,5 +82,9 @@ struct PostCardHeaderView: View {
 }
 
 #Preview {
-    PostCardHeaderView()
+    PostCardHeaderView(post: PostEntity.mock[0])
+        .environmentObject(HomeViewModel())
 }
+
+
+

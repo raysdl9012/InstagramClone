@@ -9,25 +9,38 @@
 import SwiftUI
 
 struct PostCardInteractiveView: View {
-    let username: String = "Sevens"
+    
+    let post: PostEntity
+    let userLike: Bool
+    var onLike: () -> Void = { }
+    var onComment: () -> Void = { }
+    
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 12) {
             Button(action: {
-                print("Like post de \(username)")
+                onLike()
             }) {
-                Image(systemName: "heart")
-                    .font(.title2)
-                    .foregroundColor(.primary)
+                if userLike {
+                    Image(systemName: "heart.fill")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .font(.title2)
+                        .foregroundColor(.red)
+                }else {
+                    Image(systemName: "heart")
+                        .font(.title2)
+                        .foregroundColor(.primary)
+                }
             }
             Button(action: {
-                print("Comentar post de \(username)")
+                onComment()
             }) {
                 Image(systemName: "message")
                     .font(.title2)
                     .foregroundColor(.primary)
             }
             Button(action: {
-                print("Compartir post de \(username)")
+                
             }) {
                 Image(systemName: "paperplane")
                     .font(.title2)
@@ -35,7 +48,7 @@ struct PostCardInteractiveView: View {
             }
             Spacer() // Empuja el botón de guardar a la derecha
             Button(action: {
-                print("Guardar post de \(username)")
+                
             }) {
                 Image(systemName: "bookmark")
                     .font(.title2)
@@ -48,5 +61,5 @@ struct PostCardInteractiveView: View {
 }
 
 #Preview {
-    PostCardInteractiveView()
+    PostCardInteractiveView(post: PostEntity.mock[0], userLike: true)
 }

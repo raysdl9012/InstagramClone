@@ -9,10 +9,10 @@
 import SwiftUI
 
 extension View {
-    func leadingToolbarItem(action: @escaping () -> Void) -> some ToolbarContent {
+    func leadingToolbarItem(icon: String = "plus", action: @escaping () -> Void) -> some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
             Button(action: action) {
-                Image(systemName: "plus")
+                Image(systemName: icon)
             }
         }
     }
@@ -30,10 +30,10 @@ extension View {
         }
     }
     
-    func trailingToolbarItem(action: @escaping () -> Void) -> some ToolbarContent {
+    func trailingToolbarItem(icon: String = "heart.fill", action: @escaping () -> Void) -> some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Button(action: action) {
-                Image(systemName: "heart.fill")
+                Image(systemName: icon)
             }
         }
     }

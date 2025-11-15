@@ -10,12 +10,12 @@ import SwiftUI
 
 struct RegisterBirthDay: View {
     @Environment(\.dismiss) var dismiss
-    @State private var birthDate = Date()
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
         SkeletonRegister(title: "What's your birth?",
                          description: "User your own birthday, so we can better understand you. You can change this later. This is unless you're a celebrity or something.") {
-            Text("You selected: \(formattedDate(birthDate))")
+            Text("You selected: \(formattedDate(viewModel.birthDay))")
                 .padding(.vertical, 20)
                 .font(Font.title2.bold())
             
@@ -29,7 +29,7 @@ struct RegisterBirthDay: View {
         } footer: {
             DatePicker(
                 "Select your birthday",
-                selection: $birthDate,
+                selection: $viewModel.birthDay,
                 in: ...Date(),
                 displayedComponents: [.date]
             )
@@ -47,7 +47,7 @@ struct RegisterBirthDay: View {
 extension RegisterBirthDay {
     
     private var ageIsValidated: Bool {
-        calculateAge(from: birthDate) <= 18
+        calculateAge(from: viewModel.birthDay) <= 18
     }
     
     private func formattedDate(_ date: Date) -> String {
@@ -67,5 +67,6 @@ extension RegisterBirthDay {
 #Preview {
     NavigationStack {
         RegisterBirthDay()
+            .environmentObject(AuthenticationViewModel())
     }
 }

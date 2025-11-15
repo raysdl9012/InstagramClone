@@ -11,18 +11,25 @@ import SwiftUI
 struct ReelsView: View {
     
     @StateObject var viewModel: ReelsViewModel = ReelsViewModel()
-    
+    @State private var selectedReelId: UUID?
     var body: some View {
         NavigationStack {
             ZStack(alignment: .center) {
-                ScrollView{
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewModel.reels) { reel in
-                            ReelsCard(reel: reel)
-                        }
+                TabView(selection: $selectedReelId){
+                    ForEach(viewModel.reels) { reel in
+                        ReelsCard(reel: reel)
+                            .tag(reel.id)
                     }
                 }
-                
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .ignoresSafeArea()
+                .onAppear {
+                    if selectedReelId == nil,
+                       let firstReel = viewModel.reels.first {
+                        selectedReelId = firstReel.id
+                    }
+                }
                 VStack {
                     Text("Reels!!  🎊")
                         .font(.system(size: 35, weight: .bold))
@@ -35,10 +42,20 @@ struct ReelsView: View {
                         )
                         .padding(.top, 15)
                     Spacer()
-                }   
+                }
             }
             .background(.black)
+            
         }
+        .refreshable {
+            viewModel.fetchReels()
+        }
+        .task {
+            if viewModel.reels.isEmpty{
+                viewModel.fetchReels()
+            }
+        }
+        .environmentObject(viewModel)
     }
 }
 

@@ -10,8 +10,7 @@ import SwiftUI
 struct LoginView: View {
     
     @EnvironmentObject var session: SessionManager
-    @State private var emailText: String = ""
-    @State private var passwordText: String = ""
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
         NavigationStack {
@@ -33,19 +32,26 @@ struct LoginView: View {
                 CustomTextFieldRegister(type: .text,
                                         placeholder:
                                             "Enter your email",
-                                        text: $emailText)
-                
+                                        text: $viewModel.email)
                 
                 CustomTextFieldRegister(type: .password,
                                         placeholder:
                                             "Enter your password",
-                                        text: $emailText)
- 
-                CustomButtonRegister(title: "Sing In", isDisable: false, secondary: true) {
-                    session.login()
-                }.padding(.top, 20)
- 
+                                        text: $viewModel.password)
                 
+                if viewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .purple))
+                        .scaleEffect(1.6)
+                        .padding(.top, 30)
+                } else {
+                    CustomButtonRegister(title: "Sing In",
+                                         isDisable: emailIsValid || passwordIsValid,
+                                         secondary: true) {
+                        self.hideKeyboard()
+                        viewModel.signIn()
+                    }.padding(.top, 20)
+                }
                 
                 Spacer()
                 
@@ -54,25 +60,32 @@ struct LoginView: View {
                         .navigationBarBackButtonHidden(true)
                 }
                 
-            }.padding(15)
+            }
+            .padding(15)
+            .alert("Error de Registro", isPresented: .constant(viewModel.errorMessage != nil), actions: {
+                Button("OK") {
+                    viewModel.errorMessage = nil
+                }
+            }, message: {
+                Text(viewModel.errorMessage ?? "Error desconocido")
+            })
         }
     }
+    
+    
 }
 
-class SessionManager: ObservableObject {
-    @Published var isLoggedIn: Bool = false
-    
-    func login() {
-        // Aquí podrías validar credenciales o llamar tu API
-        isLoggedIn = true
+extension LoginView {
+    private var emailIsValid: Bool {
+        viewModel.email.isEmpty || !viewModel.email.contains("@") || !viewModel.email.contains(".")
     }
-    
-    func logout() {
-        isLoggedIn = false
+    private var passwordIsValid: Bool {
+        viewModel.password.isEmpty || viewModel.password.count < 6
     }
 }
-
 
 #Preview {
     LoginView()
+        .environmentObject(SessionManager())
+        .environmentObject(AuthenticationViewModel())
 }

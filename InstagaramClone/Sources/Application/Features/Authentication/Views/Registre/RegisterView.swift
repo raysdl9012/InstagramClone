@@ -11,13 +11,14 @@ import SwiftUI
 struct RegisterView: View {
     
     @Environment(\.dismiss) var dismiss
-    @State var emailText = ""
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
         SkeletonRegister(title: "Whats your email?",
                          description: "Enter the email you wish to use to create an account") {
+            
             CustomTextFieldRegister(placeholder: "Email",
-                                    text: $emailText)
+                                    text: $viewModel.email)
             
             NavigationButton(text: "Next",
                              isDisable: emailIsValid) {
@@ -37,12 +38,13 @@ struct RegisterView: View {
 
 extension RegisterView {
     private var emailIsValid: Bool {
-        emailText.isEmpty || !emailText.contains("@")
+        viewModel.email.isEmpty || !viewModel.email.contains("@") || !viewModel.email.contains(".")
     }
 }
 
 #Preview {
     NavigationStack {
         RegisterView()
+            .environmentObject(AuthenticationViewModel())
     }
 }

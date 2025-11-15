@@ -8,27 +8,32 @@
 import SwiftUI
 
 struct SplashView: View {
-    @EnvironmentObject var session: SessionManager
+    @EnvironmentObject private var sessionManager: SessionManager
+    @StateObject private var authViewModel: AuthenticationViewModel = AuthenticationViewModel()
     var body: some View {
         ZStack {
-            if session.isLoggedIn {
+            if sessionManager.isLoadingAuthState {
+                ProgressView()
+            } else if sessionManager.user != nil {
                 CustomTabView()
-                    .environmentObject(session)
+                    .environmentObject(sessionManager)
                     .transition(.asymmetric(insertion: .scale,
-                                            removal: .slide)) 
+                                            removal: .slide))
             } else {
                 NavigationStack {
                     LoginView()
-                        .environmentObject(session)
+                        .environmentObject(sessionManager)
                         .transition(.move(edge: .leading))
                 }
+                .environmentObject(authViewModel)
             }
         }
-        .animation(.easeInOut(duration: 0.4), value: session.isLoggedIn)
+        .animation(.easeInOut(duration: 0.4), value: sessionManager.user)
     }
 }
 
 #Preview {
     SplashView()
         .environmentObject(SessionManager())
+        .environmentObject(AuthenticationViewModel())
 }

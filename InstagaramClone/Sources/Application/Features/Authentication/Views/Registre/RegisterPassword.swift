@@ -10,7 +10,8 @@ import SwiftUI
 
 struct RegisterPassword: View {
     @Environment(\.dismiss) var dismiss
-    @State var passwordText: String = ""
+    
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
         SkeletonRegister(title: "Create a password",
@@ -18,7 +19,7 @@ struct RegisterPassword: View {
             
             CustomTextFieldRegister(type: .password,
                                     placeholder: "Password",
-                                    text: $passwordText)
+                                    text: $viewModel.password)
             
             NavigationButton(text: "Next",
                              isDisable: passwordIsValid) {
@@ -34,12 +35,13 @@ struct RegisterPassword: View {
 
 extension RegisterPassword {
     private var passwordIsValid: Bool {
-        passwordText.isEmpty || passwordText.count < 6
+        viewModel.password.isEmpty || viewModel.password.count < 6
     }
 }
 
 #Preview {
     NavigationStack {
         RegisterPassword()
+            .environmentObject(AuthenticationViewModel())
     }
 }
